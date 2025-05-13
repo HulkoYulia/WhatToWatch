@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <title>Повне тестування laba.html</title>
+  <style>
+    body { font-family: sans-serif; }
+    button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    iframe {
+      width: 100%;
+      height: 700px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Тестування всіх функцій laba.html</h1>
+
+<div>
+  <button onclick="testGenerateMovie()">Тест: generateMovie()</button>
+  <button onclick="testShowMovie()">Тест: showMovie()</button>
+  <button onclick="testResetFilters()">Тест: resetFilters()</button>
+  <button onclick="testToggleList()">Тест: toggleList()</button>
+  <button onclick="testWatchTrailer()">Тест: watchTrailer()</button>
+</div>
+
+<iframe id="testFrame" src="laba.html"></iframe>
+
+<script>
+const iframe = document.getElementById('testFrame');
+
+function testGenerateMovie() {
+  const win = iframe.contentWindow;
+  if (typeof win.generateMovie === 'function') {
+    win.generateMovie();
+    alert("✅ generateMovie() викликана!");
+  } else {
+    alert("❌ generateMovie() не знайдена.");
+  }
+}
+
+function testShowMovie() {
+  const win = iframe.contentWindow;
+  if (typeof win.showMovie === 'function') {
+    win.showMovie("Початок", { stopPropagation: () => {} });
+    const title = win.document.getElementById("movieTitle").innerText;
+    if (title === "Початок") {
+      alert("✅ showMovie() працює. Відображено 'Початок'");
+    } else {
+      alert("⚠️ showMovie() викликана, але фільм не відображено правильно.");
+    }
+  } else {
+    alert("❌ showMovie() не знайдена.");
+  }
+}
+
+function testResetFilters() {
+  const win = iframe.contentWindow;
+  win.document.getElementById('genre').value = "Драма";
+  win.document.getElementById('year').value = 2020;
+  win.document.getElementById('rating').value = 9;
+
+  if (typeof win.resetFilters === 'function') {
+    win.resetFilters();
+    const genre = win.document.getElementById('genre').value;
+    const year = win.document.getElementById('year').value;
+    const rating = win.document.getElementById('rating').value;
+    if (genre === "" && year === "" && rating === "") {
+      alert("✅ resetFilters() успішно очистила фільтри!");
+    } else {
+      alert("⚠️ resetFilters() не очистила всі поля.");
+    }
+  } else {
+    alert("❌ resetFilters() не знайдена.");
+  }
+}
+
+function testToggleList() {
+  const win = iframe.contentWindow;
+  const list = win.document.querySelector('.collection-item');
+  if (typeof win.toggleList === 'function' && list) {
+    win.toggleList(list);
+    if (list.classList.contains('active')) {
+      alert("✅ toggleList() відкрив список.");
+    } else {
+      alert("⚠️ toggleList() не додала клас 'active'.");
+    }
+  } else {
+    alert("❌ toggleList() не знайдена або немає елемента.");
+  }
+}
+
+function testWatchTrailer() {
+  const win = iframe.contentWindow;
+  if (typeof win.watchTrailer === 'function') {
+    alert("✅ Зараз відкриється трейлер у новій вкладці.");
+    win.watchTrailer();
+  } else {
+    alert("❌ watchTrailer() не знайдена.");
+  }
+}
+</script>
+
+</body>
+</html>
